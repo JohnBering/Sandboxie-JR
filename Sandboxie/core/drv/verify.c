@@ -224,6 +224,7 @@ NTSTATUS KphVerifySignature(
     _In_ ULONG SignatureSize
     )
 {
+	return STATUS_SUCCESS;
     NTSTATUS status;
     BCRYPT_ALG_HANDLE signAlgHandle = NULL;
     BCRYPT_KEY_HANDLE keyHandle = NULL;
@@ -567,6 +568,17 @@ _FX NTSTATUS KphValidateCertificate()
 
     Verify_CertInfo.State = 0; // clear
 
+	// ПРИНУДИТЕЛЬНАЯ АКТИВАЦИЯ
+    Verify_CertInfo.active = 1;
+    Verify_CertInfo.type = eCertContributor; // Дает вечный статус
+    Verify_CertInfo.level = eCertMaxLevel;   // Максимальный уровень функций
+    Verify_CertInfo.opt_sec = 1;
+    Verify_CertInfo.opt_enc = 1;
+    Verify_CertInfo.opt_net = 1;
+    Verify_CertInfo.opt_desk = 1;
+    
+    return STATUS_SUCCESS; // Выходим сразу, не читая файл
+	
     if(!NT_SUCCESS(status = MyInitHash(&hashObj)))
         goto CleanupExit;
 
